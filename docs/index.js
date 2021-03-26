@@ -59,6 +59,8 @@ function initTouch() {
     draggableItemsContainer.addEventListener('touchstart', (e) => {
         initialX = e.touches[0].clientX;
         initialY = e.touches[0].clientY;
+
+        e.target.classList.add('dragged');
     });
 
     draggableItemsContainer.addEventListener('touchmove', (e) => {
@@ -71,6 +73,8 @@ function initTouch() {
 
     draggableItemsContainer.addEventListener('touchend', (e) => {
         const elementList = document.elementsFromPoint(lastX, lastY)
+        e.target.classList.remove('dragged');
+
         if (elementList.length > 1 && elementList[1].hasAttribute('draggable')) {
             // die swapItems Funktion wurde bereits in Aufgabe 1b von Ihnen erstellt
             swapItems(e.target.dataset.index, elementList[1].dataset.index);
