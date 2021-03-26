@@ -46,6 +46,7 @@ function initDragAndDrop() {
         e1.insertAdjacentElement("afterend", e2);
         e1.remove();
     }
+
 }
 
 function initTouch() {
@@ -59,6 +60,7 @@ function initTouch() {
         initialX = e.touches[0].clientX;
         initialY = e.touches[0].clientY;
     });
+
     draggableItemsContainer.addEventListener('touchmove', (e) => {
         const x = e.touches[0].clientX - initialX;
         const y = e.touches[0].clientY - initialY;
@@ -66,6 +68,7 @@ function initTouch() {
         lastY = e.touches[0].clientY;
         e.target.style.transform = "translate(" + x + "px, " + y + "px)";
     });
+
     draggableItemsContainer.addEventListener('touchend', (e) => {
         const elementList = document.elementsFromPoint(lastX, lastY)
         if (elementList.length > 1 && elementList[1].hasAttribute('draggable')) {
@@ -74,7 +77,34 @@ function initTouch() {
         }
         e.target.style.transform = "translate(0px, 0px)";
     });
+
+    function swapItems(index1, index2) {
+        const e1 = draggableItemsContainer.querySelector(`[data-index="${index1}"]`);
+        const e2 = draggableItemsContainer.querySelector(`[data-index="${index2}"]`);
+
+        const temp = e1.cloneNode(true);
+        temp.classList.remove('dragged');
+        e2.insertAdjacentElement("afterend", temp);
+        e1.insertAdjacentElement("afterend", e2);
+        e1.remove();
+    }
+
 }
 
-initDragAndDrop();
+//https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
+window.addEventListener('load', (event) => {
+    console.log('page is fully loaded');
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        console.log("mobile device");
+        initTouch();
+    }else{
+        // false for not mobile device
+        console.log("not mobile device");
+        initDragAndDrop();
+    }
+});
+
+
+
+
 
