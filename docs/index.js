@@ -46,7 +46,6 @@ function initDragAndDrop() {
         e1.insertAdjacentElement("afterend", e2);
         e1.remove();
     }
-
 }
 
 function initTouch() {
@@ -68,6 +67,7 @@ function initTouch() {
         const y = e.touches[0].clientY - initialY;
         lastX = e.touches[0].clientX;
         lastY = e.touches[0].clientY;
+
         e.target.style.transform = "translate(" + x + "px, " + y + "px)";
     });
 
@@ -90,6 +90,7 @@ function initTouch() {
         temp.classList.remove('dragged');
         e2.insertAdjacentElement("afterend", temp);
         e1.insertAdjacentElement("afterend", e2);
+        temp.style.transform = "translate(" + 0 + "px, " + 0 + "px)";
         e1.remove();
     }
 
