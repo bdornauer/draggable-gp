@@ -29,10 +29,9 @@ function initDragAndDrop() {
     draggableItemsContainer.addEventListener('drop', (e) => {
         e.preventDefault();
         e.target.classList.remove('dragover');
-
         const index1 = e.dataTransfer.getData('text/plain');
         const index2 = e.target.dataset.index;
-        swap(index1,index2);
+        swap(index1, index2);
         // TODO: HTML-Elemente tauschen
     });
 
@@ -62,11 +61,26 @@ function initTouch() {
         e.target.classList.add('dragged');
     });
 
+    let currentSelectedElement;
     draggableItemsContainer.addEventListener('touchmove', (e) => {
         const x = e.touches[0].clientX - initialX;
         const y = e.touches[0].clientY - initialY;
         lastX = e.touches[0].clientX;
         lastY = e.touches[0].clientY;
+
+        const elementList = document.elementsFromPoint(lastX, lastY)
+
+        if (elementList[1].hasAttribute('draggable')) {
+            elementList[1].classList.add('dragover');
+        }
+
+        const childs = draggableItemsContainer.children;
+
+        for (let i = 0; i < childs.length; i++) {
+            if (elementList[1] !== childs[i]) {
+                childs[i].classList.remove('dragover')
+            }
+        }
 
         e.target.style.transform = "translate(" + x + "px, " + y + "px)";
     });
@@ -86,12 +100,7 @@ function initTouch() {
         const e1 = draggableItemsContainer.querySelector(`[data-index="${index1}"]`);
         const e2 = draggableItemsContainer.querySelector(`[data-index="${index2}"]`);
 
-        const temp = e1.cloneNode(true);
-        temp.classList.remove('dragged');
-        e2.insertAdjacentElement("afterend", temp);
-        e1.insertAdjacentElement("afterend", e2);
-        temp.style.transform = "translate(" + 0 + "px, " + 0 + "px)";
-        e1.remove();
+
     }
 
 }
@@ -99,10 +108,10 @@ function initTouch() {
 //https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         console.log("mobile device");
         initTouch();
-    }else{
+    } else {
         // false for not mobile device
         console.log("not mobile device");
         initDragAndDrop();
