@@ -1,6 +1,6 @@
-function initDragAndDrop() {
-    const draggableItemsContainer = document.querySelector('ul');
+const draggableItemsContainer = document.querySelector('ul');
 
+function initDragAndDrop() {
     draggableItemsContainer.addEventListener('dragstart', (e) => {
         e.target.classList.add('dragged');
     });
@@ -36,19 +36,27 @@ function initDragAndDrop() {
     });
 
     function swap(index1, index2) {
-        const e1 = draggableItemsContainer.querySelector(`[data-index="${index1}"]`);
-        const e2 = draggableItemsContainer.querySelector(`[data-index="${index2}"]`);
+        const elements = draggableItemsContainer.children;
+        let arr = [];
+        for (let i = 0; i < elements.length; i++) {
+            arr.push(elements[i].dataset.index);
+        }
 
-        const temp = e1.cloneNode(true);
-        temp.classList.remove('dragged');
-        e2.insertAdjacentElement("afterend", temp);
-        e1.insertAdjacentElement("afterend", e2);
-        e1.remove();
+        elements[index2 - 1].insertAdjacentElement('afterend', elements[index1 - 1]);
+
+        for (let i = 0; i < elements.length; i++) {
+            if (index1 == arr[i]) {
+                //logic < >
+                // elements[i].insertAdjacentElement('afterend',elements[index2]);
+                console.log(arr[i]);
+            }
+        }
+        console.log(arr);
     }
+
 }
 
 function initTouch() {
-    const draggableItemsContainer = document.querySelector('ul');
     let initialX = 0;
     let initialY = 0;
     let lastX = 0;
@@ -88,32 +96,27 @@ function initTouch() {
     draggableItemsContainer.addEventListener('touchend', (e) => {
         const elementList = document.elementsFromPoint(lastX, lastY)
         e.target.classList.remove('dragged');
+        elementList[1].classList.remove('dragover');
 
         if (elementList.length > 1 && elementList[1].hasAttribute('draggable')) {
             // die swapItems Funktion wurde bereits in Aufgabe 1b von Ihnen erstellt
-            swapItems(e.target.dataset.index, elementList[1].dataset.index);
+            //swapItems(e.target.dataset.index, elementList[1].dataset.index);
         }
+
         e.target.style.transform = "translate(0px, 0px)";
     });
 
-    function swapItems(index1, index2) {
-        const e1 = draggableItemsContainer.querySelector(`[data-index="${index1}"]`);
-        const e2 = draggableItemsContainer.querySelector(`[data-index="${index2}"]`);
-
-
-    }
 
 }
 
 //https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
 window.addEventListener('load', (event) => {
-    console.log('page is fully loaded');
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        console.log("mobile device");
+        console.log("---> mobile device");
         initTouch();
     } else {
         // false for not mobile device
-        console.log("not mobile device");
+        console.log("---> not desktop device");
         initDragAndDrop();
     }
 });
