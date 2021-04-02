@@ -1,5 +1,29 @@
 const draggableItemsContainer = document.querySelector('ul');
 
+function swapItems(index1, index2) {
+    let posIndex1, posIndex2;
+    const elements = draggableItemsContainer.children;
+
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].dataset.index === index1)
+            posIndex1 = i;
+        if (elements[i].dataset.index === index2)
+            posIndex2 = i;
+    }
+
+    if (posIndex1 > posIndex2) {
+       const temp = posIndex1;
+       posIndex1 = posIndex2;
+       posIndex2 = temp
+    }
+
+    console.log(posIndex2)
+    console.log(posIndex2)
+    elements[posIndex1].insertAdjacentElement('afterend',elements[posIndex2])
+    elements[posIndex2].insertAdjacentElement('afterend',elements[posIndex1])
+
+}
+
 function initDragAndDrop() {
     draggableItemsContainer.addEventListener('dragstart', (e) => {
         e.target.classList.add('dragged');
@@ -9,7 +33,7 @@ function initDragAndDrop() {
     });
     draggableItemsContainer.addEventListener('dragenter', (e) => {
         if (e.target.dataset.index) {
-            e.target.classList.add('dragover');
+           e.target.classList.add('dragover');
         }
     });
     draggableItemsContainer.addEventListener('dragleave', (e) => {
@@ -24,6 +48,8 @@ function initDragAndDrop() {
 // ...
     draggableItemsContainer.addEventListener('dragover', (e) => {
         e.preventDefault();
+
+        e.target.style.visibility = "none"
     });
 
     draggableItemsContainer.addEventListener('drop', (e) => {
@@ -31,29 +57,8 @@ function initDragAndDrop() {
         e.target.classList.remove('dragover');
         const index1 = e.dataTransfer.getData('text/plain');
         const index2 = e.target.dataset.index;
-        swap(index1, index2);
-        // TODO: HTML-Elemente tauschen
+        swapItems(index1, index2);
     });
-
-    function swap(index1, index2) {
-        const elements = draggableItemsContainer.children;
-        let arr = [];
-        for (let i = 0; i < elements.length; i++) {
-            arr.push(elements[i].dataset.index);
-        }
-
-        elements[index2 - 1].insertAdjacentElement('afterend', elements[index1 - 1]);
-
-        for (let i = 0; i < elements.length; i++) {
-            if (index1 == arr[i]) {
-                //logic < >
-                // elements[i].insertAdjacentElement('afterend',elements[index2]);
-                console.log(arr[i]);
-            }
-        }
-        console.log(arr);
-    }
-
 }
 
 function initTouch() {
@@ -99,18 +104,17 @@ function initTouch() {
         elementList[1].classList.remove('dragover');
 
         if (elementList.length > 1 && elementList[1].hasAttribute('draggable')) {
-            // die swapItems Funktion wurde bereits in Aufgabe 1b von Ihnen erstellt
-            //swapItems(e.target.dataset.index, elementList[1].dataset.index);
+            swapItems(e.target.dataset.index, elementList[1].dataset.index);
         }
 
-        e.target.style.transform = "translate(0px, 0px)";
+        e.target.style.transform = "";
     });
 
 
 }
 
-//https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
-window.addEventListener('load', (event) => {
+
+function deviceType() {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         console.log("---> mobile device");
         initTouch();
@@ -119,7 +123,13 @@ window.addEventListener('load', (event) => {
         console.log("---> not desktop device");
         initDragAndDrop();
     }
-});
+}
+
+
+//https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
+window.addEventListener('load', deviceType);
+window.addEventListener('resize', deviceType); //easier for change with development tools
+
 
 
 
